@@ -16,20 +16,63 @@ public class playerAttack : MonoBehaviour {
     [SerializeField]
     Vector2 startToEnd = new Vector2(20, 110);
 
+    [SerializeField]
+    float projectileSpeed = 250, attackCooldown = .5f;
+    
+
+    public enum attackType { meele, ranged}
+    public attackType aType = attackType.meele;
+    
+
     public GameObject weapond;
+
+    public PlayerBehavior pb;
 
 
     GameObject weapondCopy = null;
 
+    [SerializeField]
+    KeyCode attackKey = KeyCode.Z;
+
+    
+
     void FixedUpdate()
     {
-        meleeAttack();
+        if (!pb.enableControlls)
+            return;
+        switch (aType)
+        {
+            case attackType.meele:
+                meleeAttack();
+                break;
+            case attackType.ranged:
+                rangedAttack();
+                break;
+            default:
+                break;
+        }
     }
 
+    void rangedAttack()
+    {
+        attackTime += Time.deltaTime;
+        if (Input.GetMouseButton(0) && attackTime > attackCooldown)
+        {
+            attackTime = 0;
+            GameObject bullet = Instantiate(weapond, transform.position, Quaternion.identity);
+            rangedAttackDirection(ref direction);
+            bullet.GetComponent<Rigidbody2D>().AddForce(direction * projectileSpeed);
+
+        }
+    }
+    void rangedAttackDirection(ref Vector2 vector)
+    {
+        vector = (Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position).normalized;
+    }
 
     void meleeAttack()
     {
-        if (Input.GetMouseButton(0) && weapondCopy == null)
+        if (Input.GetKey(attackKey) && weapondCopy == null)
         {
             meleeAttackDirection(ref direction);
 
@@ -74,9 +117,6 @@ public class playerAttack : MonoBehaviour {
     }
     void meleeAttackDirection(ref Vector2 direction)
     {
-        if (transform.position.x > Camera.main.ScreenToWorldPoint(Input.mousePosition).x)
-            direction = Vector2.left;
-        else
-            direction = Vector2.right;        
+        direction.x = pb.direction;
     }
 }

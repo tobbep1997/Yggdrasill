@@ -14,12 +14,13 @@ class Enemy : MonoBehaviour
     [SerializeField]
     float speed = 25;
 
-
+    Animator a;
     
     void Start()
     {
         rigid2D = GetComponent<Rigidbody2D>();
         col = GetComponent<BoxCollider2D>();
+        a = GetComponent<Animator>();
     }
 
     void Update()
@@ -65,12 +66,10 @@ class Enemy : MonoBehaviour
         return something;
     }
 
-    void pathing()
+    void animations()
     {
         
     }
-
-    
 
 
 

@@ -13,6 +13,13 @@ public class PlayerBehavior : MonoBehaviour {
     private float jumpHight = 50, speed = 50;
     private float hight;
 
+    private float _direction = 0;
+
+    public float direction
+    {
+        get { return _direction; }
+    }
+
     [SerializeField]
     [Range(2,5)]
     private int groundCheck = 3;
@@ -20,6 +27,11 @@ public class PlayerBehavior : MonoBehaviour {
     [Range(0,1)]
     private float exstraDistance = .1f;
     private Vector2 distanceBetweenChecks;
+
+    [SerializeField]
+    KeyCode left = KeyCode.A, right = KeyCode.D, jump = KeyCode.W;
+
+    public bool enableControlls = true;
 
 
 	void Start ()
@@ -33,37 +45,40 @@ public class PlayerBehavior : MonoBehaviour {
 	}
     void FixedUpdate()
     {
-        playerMovment();
+        if (enableControlls)
+            playerMovment();
         
     }
 
     void playerMovment()
     {
   
-        if (Input.GetKey(KeyCode.Space) && isGrounded())
+        if (Input.GetKey(jump) && isGrounded())
         {
             rigid2D.AddForce(Vector2.up * jumpHight);
         }
 
-        if (Input.GetKey(KeyCode.Space) && Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D) && onWall(Vector2.left) && !isGrounded())
+        if (Input.GetKey(jump) && Input.GetKey(left) && !Input.GetKey(right) && onWall(Vector2.left) && !isGrounded())
         {
             rigid2D.velocity = rigid2D.velocity.normalized;
             rigid2D.AddForce((Vector2.up + Vector2.right) * jumpHight);
         }
-        if (Input.GetKey(KeyCode.Space) && !Input.GetKey(KeyCode.A) && Input.GetKey(KeyCode.D) && onWall(Vector2.right) && !isGrounded())
+        if (Input.GetKey(jump) && !Input.GetKey(left) && Input.GetKey(right) && onWall(Vector2.right) && !isGrounded())
         {
             rigid2D.velocity = rigid2D.velocity.normalized;
             rigid2D.AddForce((Vector2.up + Vector2.left) * jumpHight);
         }
 
 
-        if (Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D))
+        if (Input.GetKey(left) && !Input.GetKey(right))
         {
             rigid2D.AddForce(Vector2.left * speed * Time.deltaTime);
+            _direction = -1;
         }
-        else if (!Input.GetKey(KeyCode.A) && Input.GetKey(KeyCode.D))
+        else if (!Input.GetKey(left) && Input.GetKey(right))
         {
             rigid2D.AddForce(Vector2.right * speed * Time.deltaTime);
+            _direction = 1;
         }
     }
 

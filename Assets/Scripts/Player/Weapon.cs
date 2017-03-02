@@ -25,7 +25,6 @@ public class Weapon : MonoBehaviour , IWeapon {
 
         if (other.transform.tag == "Enemy")
         {
-            print("hello there");
             IHealth health = other.GetComponent<IHealth>();
             health.damage(damage);
             health.callDestroy();
