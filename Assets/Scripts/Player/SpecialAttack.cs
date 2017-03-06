@@ -58,8 +58,10 @@ public class SpecialAttack : MonoBehaviour {
                     {
                         lighningCopy = Instantiate(lighnings, pivotPoint.position, Quaternion.identity);
                     }
+                  
                 }
-                lighningCopy.transform.SetParent(transform);
+               
+                //lighningCopy.transform.SetParent(pivotPoint);
                 lighningCopy.transform.localScale = new Vector3(pb.direction, 1, 1);
             }
             
