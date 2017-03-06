@@ -13,7 +13,7 @@ public class PlayerBehavior : MonoBehaviour {
     private float jumpHight = 50, speed = 50;
     private float hight;
 
-    private float _direction = 0;
+    private float _direction = 1;
 
     public float direction
     {
@@ -34,12 +34,16 @@ public class PlayerBehavior : MonoBehaviour {
     public bool enableControlls = true;
 
 
+
+
+
 	void Start ()
     {
         rigid2D = GetComponent<Rigidbody2D>();
         col = GetComponent<BoxCollider2D>();
         setHorizontalDistance(ref distanceBetweenChecks.x);
         setVerticalDistance(ref distanceBetweenChecks.y);
+        
 	}	
 	void Update () {
 	}
@@ -73,11 +77,13 @@ public class PlayerBehavior : MonoBehaviour {
         if (Input.GetKey(left) && !Input.GetKey(right))
         {
             rigid2D.AddForce(Vector2.left * speed * Time.deltaTime);
+            transform.localScale = new Vector3(-1, 1, 1);
             _direction = -1;
         }
         else if (!Input.GetKey(left) && Input.GetKey(right))
         {
             rigid2D.AddForce(Vector2.right * speed * Time.deltaTime);
+            transform.localScale = new Vector3(1, 1, 1);
             _direction = 1;
         }
     }

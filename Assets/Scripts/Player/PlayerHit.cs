@@ -52,6 +52,7 @@ public class PlayerHit : MonoBehaviour {
         if (!dead)
             return;
         GetComponent<PlayerBehavior>().enableControlls = false;
+        if (rb2D.velocity.y >= 0)
         rb2D.AddForce(Vector2.up * 256);
         col.enabled = false;
     } 

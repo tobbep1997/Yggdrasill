@@ -34,7 +34,8 @@ public class playerAttack : MonoBehaviour {
     [SerializeField]
     KeyCode attackKey = KeyCode.Z;
 
-    
+    [SerializeField]
+    Transform pivotPoint = null;
 
     void FixedUpdate()
     {
@@ -59,7 +60,12 @@ public class playerAttack : MonoBehaviour {
         if (Input.GetMouseButton(0) && attackTime > attackCooldown)
         {
             attackTime = 0;
-            GameObject bullet = Instantiate(weapond, transform.position, Quaternion.identity);
+            GameObject bullet;
+            if (pivotPoint == null)
+                bullet = Instantiate(weapond, transform.position, Quaternion.identity);
+            else
+                bullet = Instantiate(weapond, pivotPoint.position, Quaternion.identity);
+
             rangedAttackDirection(ref direction);
             bullet.GetComponent<Rigidbody2D>().AddForce(direction * projectileSpeed);
 
@@ -78,13 +84,27 @@ public class playerAttack : MonoBehaviour {
 
             if (direction.x > 0)
             {
-                weapondCopy = Instantiate(weapond, transform.position, Quaternion.identity, transform);
-                weapondCopy.transform.eulerAngles = new Vector3(0, 0, startToEnd.x);
+                if (pivotPoint == null)
+                {
+                    weapondCopy = Instantiate(weapond, transform.position, Quaternion.identity, transform);
+                }
+                else
+                {
+                    weapondCopy = Instantiate(weapond, pivotPoint.position, Quaternion.identity, transform);
+                }
+                    weapondCopy.transform.eulerAngles = new Vector3(0, 0, startToEnd.x);
                 
             }
             else
             {
-                weapondCopy = Instantiate(weapond, transform.position, Quaternion.identity, transform);
+                if (pivotPoint == null)
+                {
+                    weapondCopy = Instantiate(weapond, transform.position, Quaternion.identity, transform);
+                }
+                else
+                {
+                    weapondCopy = Instantiate(weapond, pivotPoint.position, Quaternion.identity, transform);
+                }
                 weapondCopy.transform.eulerAngles = new Vector3(0, 0, -startToEnd.x);
                 weapondCopy.transform.localScale = new Vector3(-1, 1, 1);
             }
