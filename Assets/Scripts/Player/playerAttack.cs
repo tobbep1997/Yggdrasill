@@ -22,6 +22,8 @@ public class playerAttack : MonoBehaviour {
 
     public enum attackType { meele, ranged}
     public attackType aType = attackType.meele;
+
+    public Vector3 scale = new Vector3(1, 1, 1);
     
 
     public GameObject weapond;
@@ -35,7 +37,7 @@ public class playerAttack : MonoBehaviour {
     KeyCode attackKey = KeyCode.Z;
 
     [SerializeField]
-    Transform pivotPoint = null;
+    public Transform pivotPoint = null;
 
     void FixedUpdate()
     {
@@ -62,23 +64,31 @@ public class playerAttack : MonoBehaviour {
             attackTime = 0;
             GameObject bullet;
             if (pivotPoint == null)
+            {
                 bullet = Instantiate(weapond, transform.position, Quaternion.identity);
+                bullet.transform.localScale = scale;
+            }
             else
+            {
                 bullet = Instantiate(weapond, pivotPoint.position, Quaternion.identity);
+                bullet.transform.localScale = scale;
+            }
+            
 
             rangedAttackDirection(ref direction);
-            bullet.GetComponent<Rigidbody2D>().AddForce(direction * projectileSpeed);
+            bullet.GetComponent<Rigidbody2D>().AddForce(direction.normalized * projectileSpeed);
 
         }
     }
     void rangedAttackDirection(ref Vector2 vector)
     {
-        vector = (Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position).normalized;
+        vector = (Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position);
     }
 
     void meleeAttack()
     {
-        if (Input.GetKey(attackKey) && weapondCopy == null)
+        attackTime += Time.deltaTime;
+        if (Input.GetKey(attackKey) && weapondCopy == null && attackTime > attackCooldown)
         {
             meleeAttackDirection(ref direction);
 
@@ -91,8 +101,10 @@ public class playerAttack : MonoBehaviour {
                 else
                 {
                     weapondCopy = Instantiate(weapond, pivotPoint.position, Quaternion.identity, transform);
+                    weapondCopy.transform.SetParent(pivotPoint);
                 }
-                    weapondCopy.transform.eulerAngles = new Vector3(0, 0, startToEnd.x);
+                weapondCopy.transform.localScale = scale;
+                weapondCopy.transform.eulerAngles = new Vector3(0, 0, startToEnd.x);
                 
             }
             else
@@ -105,9 +117,11 @@ public class playerAttack : MonoBehaviour {
                 {
                     weapondCopy = Instantiate(weapond, pivotPoint.position, Quaternion.identity, transform);
                 }
-                weapondCopy.transform.eulerAngles = new Vector3(0, 0, -startToEnd.x);
-                weapondCopy.transform.localScale = new Vector3(-1, 1, 1);
+                //weapondCopy.transform.eulerAngles = new Vector3(0, 0, -startToEnd.x);
+                weapondCopy.transform.localScale = new Vector3(scale.x, scale.y, scale.z);
+                //Debug.Break();
             }
+            attackTime = 0;
         }
 
         if (weapondCopy != null)

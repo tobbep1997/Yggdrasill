@@ -6,7 +6,7 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 class Enemy : MonoBehaviour
 {
-    Vector2 startDir = Vector2.left;
+    Vector2 startDir = Vector2.right;
 
     Rigidbody2D rigid2D;
     BoxCollider2D col;
@@ -21,6 +21,8 @@ class Enemy : MonoBehaviour
         rigid2D = GetComponent<Rigidbody2D>();
         col = GetComponent<BoxCollider2D>();
         a = GetComponent<Animator>();
+        startDir = new Vector2((int)(startDir.x * -1), 0);
+        transform.localScale = new Vector3(startDir.x * Mathf.Abs(transform.localScale.x), transform.localScale.y, 1);
     }
 
     void Update()
@@ -29,7 +31,7 @@ class Enemy : MonoBehaviour
         if (checkEnd() || checkWall())
         {
             startDir = new Vector2((int)(startDir.x * -1), 0);
-            transform.localScale = new Vector3(startDir.x, 1, 1);
+            transform.localScale = new Vector3(startDir.x * Mathf.Abs(transform.localScale.x), transform.localScale.y, 1);
         }
     }
 

@@ -8,6 +8,8 @@ public class SpecialAttack : MonoBehaviour {
     KeyCode key;
 
     public float time = 1;
+    public float timeTilDone = 1;
+    private float doneTimer = 0;
     private float timer = 0;
 
     [SerializeField]
@@ -21,6 +23,9 @@ public class SpecialAttack : MonoBehaviour {
     [SerializeField]
     Transform pivotPoint = null;
 
+    bool done = true;
+
+
     private void Start()
     {
         pb = GetComponent<PlayerBehavior>();
@@ -28,7 +33,7 @@ public class SpecialAttack : MonoBehaviour {
 
     void Update()
     {
-        if (Input.GetKey(key))
+        if (Input.GetKey(key) && done)
         {
             pb.enableControlls = false;
 
@@ -37,16 +42,19 @@ public class SpecialAttack : MonoBehaviour {
             {
                 if (pivotPoint == null)
                 {
-                    weapondCopy = Instantiate(weapond, transform.position, Quaternion.identity);
+                    weapondCopy = Instantiate(weapond, transform.position, Quaternion.identity,transform);
                 }
                 else
                 {
-                    weapondCopy = Instantiate(weapond, pivotPoint.position, Quaternion.identity);
+                    weapondCopy = Instantiate(weapond, pivotPoint.position, Quaternion.identity,transform);
                 }
             }
-            weapondCopy.transform.SetParent(transform);
+            
             if (timer >= time)
             {
+                doneTimer += Time.deltaTime;
+                if (doneTimer > timeTilDone)
+                    done = false;
                 Destroy(weapondCopy);
                 if (lighningCopy == null)
                 {
@@ -68,6 +76,8 @@ public class SpecialAttack : MonoBehaviour {
         }
         else
         {
+            done = true;
+            doneTimer = 0;
             pb.enableControlls = true;
             timer = 0;
             if (weapondCopy != null)
